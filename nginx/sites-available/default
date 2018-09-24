@@ -1,0 +1,9 @@
+# Default server configuration, closing connection.
+#
+server {
+    listen 80;
+    listen [::]:80;
+
+    # All vhosts must be configured separately.
+    return 444;
+}

@@ -1,0 +1,36 @@
+server {
+    server_name xinutec.org;
+
+    include snippets/letsencryptauth.conf;
+
+    location ~ ^/$ {
+        return 301 http://$host/~pippijn/home;
+    }
+
+    location ~ ^/~(.+?)(/.*)?$ {
+        alias /home/$1/public_html$2;
+    }
+
+    access_log /var/log/nginx/org.xinutec.access.log;
+    error_log /var/log/nginx/org.xinutec.error.log;
+
+    listen [::]:443 ssl; # managed by Certbot
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/xinutec.org/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/xinutec.org/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+}
+
+server {
+    if ($host = xinutec.org) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+    server_name xinutec.org;
+
+    listen 80;
+    listen [::]:80;
+
+    return 404; # managed by Certbot
+}
