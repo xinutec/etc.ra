@@ -1,11 +1,6 @@
 server {
-    #server_name ra.xinutec.org;
-    server_name xinutec.net;
     server_name irc.xinutec.net;
     server_name irc.barfooze.de;
-
-    listen 80;
-    listen [::]:80;
 
     location @proxy {
         if ($http_x_forwarded_for != "") { # avoid loops
@@ -26,4 +21,27 @@ server {
 
     access_log /var/log/nginx/net.xinutec.irc.access.log;
     error_log /var/log/nginx/net.xinutec.irc.error.log;
+
+    listen [::]:443 ssl; # managed by Certbot
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/irc.xinutec.net/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/irc.xinutec.net/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+}
+server {
+    if ($host = irc.xinutec.net) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    server_name irc.xinutec.net;
+    server_name irc.barfooze.de;
+
+    listen 80;
+    listen [::]:80;
+    return 404; # managed by Certbot
+
+
 }
