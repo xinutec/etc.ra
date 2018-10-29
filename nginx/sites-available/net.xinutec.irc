@@ -2,25 +2,10 @@ server {
     server_name irc.xinutec.net;
     server_name irc.barfooze.de;
 
-    location @proxy {
-        if ($http_x_forwarded_for != "") { # avoid loops
-                return 500;
-        }
-
-        proxy_set_header X-Real-IP       $remote_addr;
-        proxy_set_header Host            $host;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-
-        proxy_pass http://xinutec-validation.barfooze.de;
-    }
-
-    location / {
-        root /srv/letsencrypt-webroot/;
-        try_files /.well-known/acme-challenge$uri $uri $uri/ @proxy;
-    }
-
     access_log /var/log/nginx/net.xinutec.irc.access.log;
     error_log /var/log/nginx/net.xinutec.irc.error.log;
+
+    include snippets/barfooze-letsencrypt-proxy.conf;
 
     listen [::]:443 ssl; # managed by Certbot
     listen 443 ssl; # managed by Certbot

@@ -2,6 +2,7 @@ server {
     server_name xinutec.org;
 
     include snippets/letsencryptauth.conf;
+    include snippets/barfooze-letsencrypt-proxy.conf;
 
     location ~ ^/$ {
         return 301 http://$host/~pippijn/home;
