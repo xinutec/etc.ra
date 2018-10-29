@@ -1,3 +1,8 @@
 /*
 !/.gitignore
+!/aliases
 !/nginx
+!/resolv.conf
+!/ufw
+
+/ssh/ssh_host_*key
